@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiAppGerenciadorTarefas.ViewModels"
+             x:Class="MauiAppGerenciadorTarefas.Views.ListaTarefasPage"
+             x:DataType="vm:ListaTarefasViewModel"
+             Title="Minhas Tarefas">
+
+    <Grid RowDefinitions="Auto, *" Padding="15" BackgroundColor="#F5F5F5">
+
+        <SearchBar Grid.Row="0"
+                   Placeholder="Pesquisar tarefas..."
+                   Text="{Binding TextoPesquisa, Mode=TwoWay}"
+                   BackgroundColor="White" />
+
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding CarregarCommand}">
+
+            <CollectionView ItemsSource="{Binding Tarefas}"
+                            SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <Label Text="Nenhuma tarefa encontrada"
+                               FontSize="18"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="x:Object">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Excluir"
+                                               BackgroundColor="Red"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaTarefasViewModel}}, Path=ExcluirCommand}"
+                                               CommandParameter="{Binding}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border StrokeShape="RoundRectangle 10"
+                                    BackgroundColor="White"
+                                    Stroke="Transparent"
+                                    Margin="0,5"
+                                    Padding="15">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaTarefasViewModel}}, Path=ConcluirCommand}"
+                                        CommandParameter="{Binding}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Status}"
+                                           FontSize="20"
+                                           VerticalOptions="Center" />
+
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding Nome}"
+                                               FontSize="16"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding Descricao}"
+                                               FontSize="13"
+                                               TextColor="Gray"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Data, StringFormat='{0:dd/MM/yyyy}'}"
+                                               FontSize="12"
+                                               TextColor="DarkGray" />
+                                    </StackLayout>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>
